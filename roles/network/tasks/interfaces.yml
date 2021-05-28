@@ -9,18 +9,20 @@
     insertafter: '#!/bin/sh'
   tags: [network, interfaces]
 
-- name: Deploy /etc/network/interfaces.d/99-proxmox-vmbr
-  template:
-    src: interfaces.j2
-    dest: /etc/network/interfaces.d/99-proxmox-vmbr
-  tags: [network, interfaces]
-
-- name: Ensure 99-proxmox-vmbr will be loaded
+- name: Add new vmbr interfaces
   blockinfile:
     path: /etc/network/interfaces
-    marker: "# {mark} added by Ansible, do not remove (please)"
-    block:
-      source /etc/network/interfaces.d/99-proxmox-vmbr
+    marker: "# {mark} {{ item.interface }} added by Ansible, do not remove (please)"
+    block: |2
+      auto {{ item.interface }}
+      iface {{ item.interface }} inet static
+        address {{ item.address }}/{{ item.netmask }}
+        bridge-ports none
+        bridge-stp off
+        bridge-fd 0
+        post-up iptables -t nat -A POSTROUTING -s '{{ item.network }}/{{ item.netmask }}' -o vmbr0 -j MASQUERADE
+  with_items:
+    - "{{ interfaces }}"
   tags: [network, interfaces]
 
 - name: Remove locks
