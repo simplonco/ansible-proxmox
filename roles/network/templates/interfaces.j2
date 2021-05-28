@@ -1,0 +1,17 @@
+# File managed by Ansible
+# Do not edit !
+
+{% for i in interfaces %}
+
+auto {{ i.interface }} 
+iface {{ i.interface }} inet static
+	address {{ i.address }}/{{ i.netmask }}
+	bridge-ports none
+	bridge-stp off
+	bridge-fd 0
+
+	post-up iptables -t nat -A POSTROUTING -s '{{ i.network }}/{{ i.netmask }}' -o vmbr0 -j MASQUERADE
+
+{% endfor %}
+
+# EOF

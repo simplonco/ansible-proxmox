@@ -1,0 +1,31 @@
+---
+- name: Install common packages
+  apt:
+    state: present
+    pkg: 
+      - apt-transport-https
+      - auditd
+      - bzip2
+      - chkrootkit
+      - clamav
+      - curl
+      - fping
+      - htop
+      - lnav
+      - lynis
+      - multitail
+      - netdiscover
+      - python3-apt
+      - rkhunter
+      - rng-tools
+      - sudo
+      - tcpdump
+      - tree
+      - tzdata
+      - unattended-upgrades
+      - vim
+      - wget
+
+- name: Set timezone to Europe/Paris
+  timezone:
+    name: Europe/Paris

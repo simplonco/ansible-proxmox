@@ -1,0 +1,31 @@
+---
+- name: Install isc-dhcp-server
+  apt:
+    name: isc-dhcp-server
+    state: present
+  tags: [network, dhcp]
+
+- name: Deploy /etc/default/isc-dhcp-server
+  template:
+    src: isc-dhcp-server.j2
+    dest: /etc/default/isc-dhcp-server
+    owner: root
+    group: root
+    mode: "0664"
+  tags: [network, dhcp]
+
+- name: Deploy /etc/dhcp/dhcpd.conf
+  template:
+    src: dhcpd.conf.j2
+    dest: /etc/dhcp/dhcpd.conf
+    owner: root
+    group: root
+    mode: "0664"
+  tags: [network, dhcp]
+
+- name: Ensure isc-dhcp-server is enabled and restart it
+  systemd:
+    name: isc-dhcp-server
+    state: restarted
+    enabled: yes
+  tags: [network, dhcp]

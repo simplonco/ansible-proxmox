@@ -1,0 +1,9 @@
+#
+# File managed by Ansible, do not edit !
+#
+
+DHCPDv4_CONF=/etc/dhcp/dhcpd.conf
+DHCPDv4_PID=/var/run/dhcpd.pid
+INTERFACESv4="{% for d in dhcp %}{{ d.interface }} {% endfor %}"
+
+# EOF

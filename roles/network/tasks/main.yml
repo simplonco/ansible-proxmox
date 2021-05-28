@@ -1,0 +1,15 @@
+---
+- name: Sysctl IP forward
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: yes
+  tags: [network]
+
+- name: Include interfaces.yml
+  include: interfaces.yml
+  when: interfaces is defined
+
+- name: Include dhcp.yml
+  include: dhcp.yml
+  when: dhcp is defined

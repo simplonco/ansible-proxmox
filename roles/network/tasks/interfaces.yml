@@ -1,0 +1,46 @@
+---
+- name: Disable /etc/network/if-pre-up.d/wait_for_link_up for vmbr[1-9]
+  blockinfile:
+    path: /etc/network/if-pre-up.d/wait_for_link_up
+    marker: "# {mark} added by Ansible, do not remove (please)"
+    block: |
+      echo ${IFACE} | egrep -q 'vmbr[1-9]'
+      if [ $? -eq 0 ] ; then exit 0 ; fi
+    insertafter: '#!/bin/sh'
+  tags: [network, interfaces]
+
+- name: Deploy /etc/network/interfaces.d/99-proxmox-vmbr
+  template:
+    src: interfaces.j2
+    dest: /etc/network/interfaces.d/99-proxmox-vmbr
+  tags: [network, interfaces]
+
+- name: Ensure 99-proxmox-vmbr will be loaded
+  blockinfile:
+    path: /etc/network/interfaces
+    marker: "# {mark} added by Ansible, do not remove (please)"
+    block:
+      source /etc/network/interfaces.d/99-proxmox-vmbr
+  tags: [network, interfaces]
+
+- name: Remove locks
+  file:
+    path: /run/network/ifstate.{{ item.interface }}
+    state: absent
+  with_items:
+    - "{{ interfaces }}"
+  tags: [network, interfaces]
+
+- name: Run ifdown on each interfaces
+  command: "ifdown {{ item.interface }}"
+  with_items:
+    - "{{ interfaces }}"
+  ignore_errors: yes
+  tags: [network, interfaces]
+
+- name: Run ifup on each interfaces
+  command: "ifup --ignore-errors {{ item.interface }}"
+  with_items:
+    - "{{ interfaces }}"
+  ignore_errors: yes
+  tags: [network, interfaces]

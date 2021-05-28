@@ -1,0 +1,24 @@
+#
+# File managed by Ansible, do not edit !
+#
+
+default-lease-time 86400;  
+max-lease-time 86400;
+
+authoritative;
+
+log-facility local7; 
+
+{% for d in dhcp %}
+subnet {{ d.network }} netmask {{ d.netmask }} {
+  range {{ d.first }} {{ d.last }};
+  option routers {{ d.gateway }};
+  option broadcast-address {{ d.broadcast }};
+  option domain-name-servers 80.67.169.12, 80.67.169.40;
+  default-lease-time 600;
+  max-lease-time 7200;
+
+}
+{% endfor %}
+
+# EOF
