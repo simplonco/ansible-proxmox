@@ -1,0 +1,18 @@
+---
+- hosts: all
+
+  vars:
+  
+    # network role
+    interfaces:
+      - { interface: 'vmbr1', address: '172.16.1.1', network: '172.16.1.0', netmask: '24' }
+      - { interface: 'vmbr2', address: '172.16.2.1', network: '172.16.2.0', netmask: '24' }
+    dhcp:
+      - { interface: 'vmbr1', first: '172.16.1.100', last: '172.16.1.200',
+          network: '172.16.1.0', broadcast: '172.16.1.255', netmask: '255.255.255.0', gateway: '172.16.1.1' }
+      - { interface: 'vmbr2', first: '172.16.2.100', last: '172.16.2.200',
+          network: '172.16.2.0', broadcast: '172.16.2.255', netmask: '255.255.255.0', gateway: '172.16.2.1' }
+
+  roles:
+    - { role: base }
+    - { role: network }

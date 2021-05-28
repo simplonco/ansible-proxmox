@@ -25,7 +25,9 @@
       - unattended-upgrades
       - vim
       - wget
+  tags: [base]
 
 - name: Set timezone to Europe/Paris
   timezone:
     name: Europe/Paris
+  tags: [base]

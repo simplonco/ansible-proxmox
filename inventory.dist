@@ -1,0 +1,3 @@
+# cp inventory.dist inventory and adapt !
+#proxmox-1.yourdomain.tld ansible_user=root
+#proxmox-1.yourdomain.tld ansible_user=root ansible_port=2222
